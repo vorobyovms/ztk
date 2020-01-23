@@ -1,0 +1,153 @@
+[general]
+static=yes
+writeprotect=no
+;autofallthrough=no
+;extenpatternmatchnew=no
+clearglobalvars=no
+;userscontext=default
+;SOUND_DIR = /etc/asterisk/sounds
+
+[ztk]
+include => local
+include => zp-out
+include => dp-out
+include => towanother
+include => towanother1
+include => towanother2
+include => 612282535
+include => 612282141
+include => 567943330
+include => 4898
+include => 6896
+include => 1510
+
+[local]
+exten => _1XX,1,Dial(SIP/${EXTEN},60)
+exten => _1XX,n,Hangup()
+
+[check-local]
+exten => 964,1,Background(/etc/asterisk/sounds/hello)
+exten => 964,2,Set(_CALLER=${CALLERID(num)})
+exten => 964,3,Answer
+exten => 964,4,Set(fname=${UNIQUEID})
+exten => 964,5,Set(CDR(filename)=${fname}.wav)
+exten => 964,6,MixMonitor(${fname}.wav,b)
+exten => 964,7,Queue(beston)
+exten => 964,8,Playback(agent-loginok)
+exten => 964,9,Hangup()
+
+[bye]
+exten => s,1,NoOp("Good Bye")
+exten => s,2,Background(/etc/asterisk/sounds/offwork)
+
+[macro-mymacro]
+exten => s,1,NoOp(${MEMBERINTERFACE})
+exten => s,2,NoOp("CALLER = " ${CALLER})
+exten => s,3,Set(FUM=${SHELL(/bin/echo "test")})
+exten => s,4,NoOp("FIM = " ${FUM})
+
+[zp-out]
+exten => 061X.,1,Dial(SIP/ztk_zp/${EXTEN},160)
+exten => 061X.,2,Dial(SIP/ztk_zp1/${EXTEN},160)
+
+[dp-out]
+exten => 056X.,1,Set(fname=${UNIQUEID})
+exten => 056X.,2,Set(CDR(filename)=${fname}.wav)
+exten => 056X.,3,MixMonitor(${fname}.wav,b)
+exten => 056X.,4,Dial(SIP/ztk_dp/${EXTEN},160,r)
+
+[towanother]
+exten => _0XXXXXXXXX,1,Set(fname=${UNIQUEID})
+exten => _0XXXXXXXXX,2,Set(CDR(filename)=${fname}.wav)
+exten => _0XXXXXXXXX,3,MixMonitor(${fname}.wav,b)
+exten => _0XXXXXXXXX,4,Dial(SIP/0676241510/1${EXTEN},160,r)
+exten => _0XXXXXXXXX,5,GotoIf($["${DIALSTATUS}" = "BUSY"]?towanother1,1)
+exten => _0XXXXXXXXX,6,GotoIf($["${DIALSTATUS}" = "NOANSWER"]?towanother1,1)
+exten => _0XXXXXXXXX,6,GotoIf($["${DIALSTATUS}" = "CONGESTION"]?towanother1,1)
+
+[towanother1]
+exten => _0XXXXXXXXX,1,Set(fname=${UNIQUEID})
+exten => _0XXXXXXXXX,2,Set(CDR(filename)=${fname}.wav)
+exten => _0XXXXXXXXX,3,MixMonitor(${fname}.wav,b)
+exten => _0XXXXXXXXX,4,Dial(SIP/0676144898/2${EXTEN},160,r)
+exten => _0XXXXXXXXX,5,GotoIf($["${DIALSTATUS}" = "BUSY"]?towanother2,1)
+exten => _0XXXXXXXXX,6,GotoIf($["${DIALSTATUS}" = "NOANSWER"]?towanother2,1)
+exten => _0XXXXXXXXX,7,GotoIf($["${DIALSTATUS}" = "CONGESTION"]?towanother2,1)
+
+[towanother2]
+exten => _0XXXXXXXXX,1,Set(fname=${UNIQUEID})
+exten => _0XXXXXXXXX,2,Set(CDR(filename)=${fname}.wav)
+exten => _0XXXXXXXXX,3,MixMonitor(${fname}.wav,b)
+exten => _0XXXXXXXXX,4,Dial(SIP/0676176896/3${EXTEN},160,r)
+
+exten => _0XXXXXXXXX,5,Hangup()
+
+[612282535]
+exten => _612282535,1,Background(/etc/asterisk/sounds/hello)
+exten => _612282535,2,Set(_CALLER=${CALLERID(num)})
+exten => _612282535,3,Answer
+exten => _612282535,4,Set(fname=${UNIQUEID})
+exten => _612282535,5,Set(CDR(filename)=${fname}.wav)
+exten => _612282535,6,MixMonitor(${fname}.wav,b)
+exten => _612282535,7,Queue(2535)
+exten => _612282535,8,Playback(agent-loginok)
+exten => _612282535,9,Hangup()
+
+[612282141]
+exten => _612282141,1,Background(/etc/asterisk/sounds/hello)
+exten => _612282141,2,Set(_CALLER=${CALLERID(num)})
+exten => _612282141,3,Answer
+exten => _612282141,4,Set(fname=${UNIQUEID})
+exten => _612282141,5,Set(CDR(filename)=${fname}.wav)
+exten => _612282141,6,MixMonitor(${fname}.wav,b)
+exten => _612282141,7,Queue(2141)
+exten => _612282141,8,Playback(agent-loginok)
+exten => _612282141,9,Hangup()
+
+[567943330]
+exten => 567943330,1,Background(/etc/asterisk/sounds/hello)
+exten => 567943330,2,Set(_CALLER=${CALLERID(num)})
+exten => 567943330,3,Answer
+exten => 567943330,4,Set(fname=${UNIQUEID})
+exten => 567943330,5,Set(CDR(filename)=${fname}.wav)
+exten => 567943330,6,MixMonitor(${fname}.wav,b)
+exten => 567943330,7,Queue(3330)
+exten => 567943330,8,Playback(agent-loginok)
+exten => 567943330,9,Hangup()
+
+;ETS incoming
+[4898]
+exten => 4898,1,Background(/etc/asterisk/sounds/hello)
+exten => 4898,2,Set(_CALLER=${CALLERID(num)})
+exten => 4898,3,Answer
+exten => 4898,4,Set(fname=${UNIQUEID})
+exten => 4898,5,Set(CDR(filename)=${fname}.wav)
+exten => 4898,6,MixMonitor(${fname}.wav,b)
+exten => 4898,7,Queue(3330)
+exten => 4898,8,Playback(agent-loginok)
+exten => 4898,9,Hangup()
+
+;TKTD incoming
+[6896]
+exten => 6896,1,Background(/etc/asterisk/sounds/hello)
+exten => 6896,2,Set(_CALLER=${CALLERID(num)})
+exten => 6896,3,Answer
+exten => 6896,4,Set(fname=${UNIQUEID})
+exten => 6896,5,Set(CDR(filename)=${fname}.wav)
+exten => 6896,6,MixMonitor(${fname}.wav,b)
+exten => 6896,7,Queue(3330)
+exten => 6896,8,Playback(agent-loginok)
+exten => 6896,9,Hangup()
+
+;oblpostach incoming
+[1510]
+exten => 1510,1,Background(/etc/asterisk/sounds/hello)
+exten => 1510,2,Set(_CALLER=${CALLERID(num)})
+exten => 1510,3,Answer
+exten => 1510,4,Set(fname=${UNIQUEID})
+exten => 1510,5,Set(CDR(filename)=${fname}.wav)
+exten => 1510,6,MixMonitor(${fname}.wav,b)
+exten => 1510,7,Queue(3330)
+exten => 1510,8,Playback(agent-loginok)
+exten => 1510,9,Hangup()
+

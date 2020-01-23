@@ -1,0 +1,60 @@
+[general]
+static=yes
+writeprotect=no
+;autofallthrough=no
+;extenpatternmatchnew=no
+clearglobalvars=no
+;userscontext=default
+;SOUND_DIR = /etc/asterisk/sounds
+
+[ztk]
+include => local
+include => zp-out
+include => dp-out
+include => towanother
+
+[local]
+exten => _1XX,1,Dial(SIP/${EXTEN},60)
+exten => _1XX,n,Hangup()
+
+[check-local]
+exten => 964,1,Background(/etc/asterisk/sounds/hello)
+exten => 964,2,Set(_CALLER=${CALLERID(num)})
+exten => 964,3,Answer
+exten => 964,4,Set(fname=${UNIQUEID})
+exten => 964,5,Set(CDR(filename)=${fname}.wav)
+exten => 964,6,MixMonitor(${fname}.wav,b)
+exten => 964,7,Queue(beston)
+exten => 964,8,Playback(agent-loginok)
+exten => 964,9,Hangup()
+
+[bye]
+exten => s,1,NoOp("Good Bye")
+exten => s,2,Background(/etc/asterisk/sounds/offwork)
+
+[macro-mymacro]
+exten => s,1,NoOp(${MEMBERINTERFACE})
+exten => s,2,NoOp("CALLER = " ${CALLER})
+exten => s,3,Set(FUM=${SHELL(/bin/echo "test")})
+exten => s,4,NoOp("FIM = " ${FUM})
+
+[zp-out]
+exten => 061X.,1,Dial(SIP/ztk_zp/${EXTEN},160)
+exten => 061X.,2,Dial(SIP/ztk_zp1/${EXTEN},160)
+
+[dp-out]
+exten => 056X.,1,Dial(SIP/ztk_dp/${EXTEN},160)
+
+[towanother]
+exten => _0X.,1,Dial(SIP/ztk_zp/${EXTEN},160)
+exten => _0X.,2,Dial(SIP/ztk_zp1/${EXTEN},160)
+
+[612282535]
+exten => s,1,Dial(SIP/100/${EXTEN},160)
+
+[612282141]
+exten => s,1,Dial(SIP/101/${EXTEN},160)
+
+[567943330]
+exten => s,1,Dial(SIP/102
+/${EXTEN},160)
